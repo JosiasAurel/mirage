@@ -8,12 +8,6 @@ struct CropParams {
 }
 
 fn main() {
-    // 1. First, you need to implement some basic command-line argument handling
-    // so you can make your program do different things.  Here's a little bit
-    // to get you started doing manual parsing.
-    //
-    // Challenge: If you're feeling really ambitious, you could delete this code
-    // and use the "clap" library instead: https://docs.rs/clap/2.32.0/clap/
     let mut args: Vec<String> = std::env::args().skip(1).collect();
     
     if args.is_empty() {
@@ -218,14 +212,24 @@ fn grayscale(infile: String, outfile: String) {
 
 fn generate(outfile: String, color: &[u8; 3]) {
     let mut imgbuf = image::ImageBuffer::new(800, 800);
+    let rs: Vec<i32> =  (-400..=400).collect(); // values of r
+    let thetas: Vec<u32> = (0..=360).collect();
+    
+    let mut rng = rand::thread_rng();
+    let a1 = rng.gen::<u32>();
+    let a2 = rng.gen::<u32>();
+    let trig_fn = rng.gen_range(1..=3);
+
     for (x, y, pixel) in imgbuf.enumerate_pixels_mut() {
+        let value: u32;
+        match trig_fn {
+            1 => {
+                
+            }
+            _ => {}
+        }
         *pixel = image::Rgb(*color);
     }
-
-    // Set the image to some solid color. -- see fractal() for an example
-
-    // Challenge: parse some color data from the command-line, pass it through
-    // to this function to use for the solid color.
 
     // Challenge 2: Generate something more interesting!
 
