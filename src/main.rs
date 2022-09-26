@@ -4,19 +4,19 @@ struct CropParams {
     x: u32,
     y: u32,
     width: u32,
-    height: u32
+    height: u32,
 }
 
 fn main() {
     let mut args: Vec<String> = std::env::args().skip(1).collect();
-    
+
     if args.is_empty() {
         print_usage_and_exit();
     }
     let subcommand = args.remove(0);
-    
+
     match subcommand.as_str() {
-        "blur" => { 
+        "blur" => {
             if args.len() < 2 || args.len() > 3 {
                 print_usage_and_exit();
             }
@@ -39,7 +39,10 @@ fn main() {
             let outfile = args.remove(0);
             let inc_amt: i32;
             if args.len() > 0 {
-                inc_amt = args.remove(0).parse().expect("Failed to parse brightness amount");
+                inc_amt = args
+                    .remove(0)
+                    .parse()
+                    .expect("Failed to parse brightness amount");
             } else {
                 inc_amt = 2;
             }
@@ -52,12 +55,12 @@ fn main() {
             }
             let infile = args.remove(0);
             let outfile = args.remove(0);
-           
+
             let crop_params = CropParams {
                 x: args.remove(0).parse().expect("Failed to parse x"),
                 y: args.remove(0).parse().expect("Failed to parse x"),
                 width: args.remove(0).parse().expect("Failed to parse x"),
-                height: args.remove(0).parse().expect("Failed to parse x")
+                height: args.remove(0).parse().expect("Failed to parse x"),
             };
 
             crop(infile, outfile, &crop_params);
@@ -113,19 +116,19 @@ fn main() {
             let outfile = args.remove(0);
             if args.len() == 0 {
                 let mut rng = rand::thread_rng();
-                color = [rng.gen::<u8>(), rng.gen::<u8>(), rng.gen::<u8>()]; 
-    
+                color = [rng.gen::<u8>(), rng.gen::<u8>(), rng.gen::<u8>()];
+
                 generate(outfile, &color);
-            } else if args.len() == 3  {
+            } else if args.len() == 3 {
                 let red: u8 = args.remove(0).parse().expect("Failed to parse red value");
-                let green: u8= args.remove(0).parse().expect("Failed to parse green value");
+                let green: u8 = args.remove(0).parse().expect("Failed to parse green value");
                 let blue: u8 = args.remove(0).parse().expect("Failed to parse blue value");
                 color = [red, green, blue];
-    
+
                 generate(outfile, &color);
             }
         }
-        
+
         _ => {
             print_usage_and_exit();
         }
@@ -143,35 +146,41 @@ fn print_usage_and_exit() {
 }
 
 fn blur(infile: String, outfile: String, blur_amount: f32) {
-    // open image 
+    // open image
     let img = image::open(infile).expect("Failed to open INFILE.");
-    
+
     // blur image
     let blurred_image = img.blur(blur_amount);
-    
+
     // save image file
-    blurred_image.save(outfile).expect("Failed writing OUTFILE.");
+    blurred_image
+        .save(outfile)
+        .expect("Failed writing OUTFILE.");
 }
 
 fn brighten(infile: String, outfile: String, inc_amt: i32) {
-
     let img = image::open(infile).expect("Failed to open INFILE");
 
     let brightened_image = img.brighten(inc_amt);
 
-    brightened_image.save(outfile).expect("Failed to write to OUTFILE");
+    brightened_image
+        .save(outfile)
+        .expect("Failed to write to OUTFILE");
 }
 
 fn crop(infile: String, outfile: String, crop_params: &CropParams) {
-
     let mut img = image::open(infile).expect("Failed to open INFILE");
 
-    let cropped_img = img.crop(crop_params.x, crop_params.y, crop_params.width, crop_params.height);
-    
+    let cropped_img = img.crop(
+        crop_params.x,
+        crop_params.y,
+        crop_params.width,
+        crop_params.height,
+    );
+
     cropped_img.save(outfile).expect("Failed to crop image");
 }
 fn rotate(infile: String, outfile: String, direction: &String) {
-
     let img = image::open(infile).expect("Failed to read INFILE");
 
     let rotated_img;
@@ -190,7 +199,7 @@ fn rotate(infile: String, outfile: String, direction: &String) {
             return;
         }
     }
-    
+
     rotated_img.save(outfile).expect("Failed to save image")
 }
 
@@ -212,23 +221,49 @@ fn grayscale(infile: String, outfile: String) {
 
 fn generate(outfile: String, color: &[u8; 3]) {
     let mut imgbuf = image::ImageBuffer::new(800, 800);
-    let rs: Vec<i32> =  (-400..=400).collect(); // values of r
-    let thetas: Vec<u32> = (0..=360).collect();
-    
+
     let mut rng = rand::thread_rng();
-    let a1 = rng.gen::<u32>();
-    let a2 = rng.gen::<u32>();
     let trig_fn = rng.gen_range(1..=3);
+    let a1: f32 = rng.gen_range(1.0..5.0) as f32;
+    let point_color = [
+        rng.gen_range(1..=255),
+        rng.gen_range(1..=255),
+        rng.gen_range(1..=255),
+    ];
 
     for (x, y, pixel) in imgbuf.enumerate_pixels_mut() {
-        let value: u32;
+
+        let angle: f32 = (y as f32/x as f32).atan();
+        let r = (x as f32)/angle.cos();
+        println!("a = {}, r = {}, fn = {}, x= {}, y = {}", a1, r, trig_fn, x, y);
+        let mut light_pixel = false;
         match trig_fn {
             1 => {
-                
+                let r_c = 800.0*(a1*angle).cos();
+                if (r_c - r).abs() < 5.0 {
+                    light_pixel = true;
+                }
+            }
+            2 => {
+                let r_c = 800.0*(a1*angle).sin();
+                if (r_c - r).abs() < 5.0 {
+                    light_pixel = true;
+                }
+            }
+            3 => {
+                let r_c = 800.0*(a1*angle).tan();
+                if (r_c - r).abs() < 5.0 {
+                    light_pixel = true;
+                }
             }
             _ => {}
         }
-        *pixel = image::Rgb(*color);
+
+        if  light_pixel {
+            *pixel = image::Rgb(point_color);
+        } else {
+            *pixel = image::Rgb(*color);
+        }
     }
 
     // Challenge 2: Generate something more interesting!
