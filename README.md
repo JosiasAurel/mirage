@@ -29,7 +29,7 @@ Run the binary by calling it `./mirage`.
 
 You can blur images by running
 ```shell
-./mirage input.png output.png 
+./mirage blur input.png output.png 
 ```
 The default blur amount is 2.0 but you can change that to any amout you want by passing a number as third argument.
 
