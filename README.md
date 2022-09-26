@@ -129,7 +129,7 @@ If you take a look at the code, I could easily loop within a range of values, ge
 - One for plotting the polar points (converted to cartesian points)
 - Another to light all the other pixels
 
-That's double work... we don't want O(N²)
+That's double work... let's save time and resources 
 
 So a simpler method would be to just iterate over the pixels of the image and light the ones that fall on the polar curve with a special color to differentiate them.
 
