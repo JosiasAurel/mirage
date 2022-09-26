@@ -233,25 +233,28 @@ fn generate(outfile: String, color: &[u8; 3]) {
 
     for (x, y, pixel) in imgbuf.enumerate_pixels_mut() {
 
-        let angle: f32 = (y as f32/x as f32).atan();
-        let r = (x as f32)/angle.cos();
+        let x_: i32 = if x <= 400 { (x as i32)-400 } else { 400-(x as i32) };
+        let y_: i32 = if x <= 400 { (y as i32)-400 } else { 400-(y as i32) };
+        let angle: f32 = (y_ as f32/x_ as f32).atan();
+        let r = (x_ as f32)/angle.cos();
+        
         // println!("a = {}, r = {}, fn = {}, x= {}, y = {}", a1, r, trig_fn, x, y);
         let mut light_pixel = false;
         match trig_fn {
             1 => {
-                let r_c = 800.0*(a1*angle).cos();
+                let r_c = 400.0*(a1*angle).cos();
                 if (r_c - r).abs() < 5.0 {
                     light_pixel = true;
                 }
             }
             2 => {
-                let r_c = 800.0*(a1*angle).sin();
+                let r_c = 400.0*(a1*angle).sin();
                 if (r_c - r).abs() < 5.0 {
                     light_pixel = true;
                 }
             }
             3 => {
-                let r_c = 800.0*(a1*angle).tan();
+                let r_c = 400.0*(a1*angle).tan();
                 if (r_c - r).abs() < 5.0 {
                     light_pixel = true;
                 }
