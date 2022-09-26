@@ -101,7 +101,7 @@ Some sample patterns below
 
 Polar Coordinates 👩‍🎤 ... no, there are no polar bears.
 
-I'll save you some brain cells and direct your to [Brillian](https://brilliant.org/wiki/polar-curves/) if you want to understand them.
+I'll save you some brain cells and direct your to [Brilliant](https://brilliant.org/wiki/polar-curves/) if you want to understand them.
 
 > I will assume you have gone through the article and have an understanding on how to plot polar curves 
 
