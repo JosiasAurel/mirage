@@ -118,7 +118,7 @@ In polar coordinates, points are of the form $(r, \theta)$ but we are dealing wi
 
 In order to plot each polar point,we need to first convert them to cartesian points.
 
-$$ sin\theta = { y \over r } \\ cos\theta = { x \over r } \\ tan\theta = { y \over y } $$
+$$ sin\theta = { y \over r } \\ cos\theta = { x \over r } \\ tan\theta = { y \over x } $$
 
 For $tan\theta$, we will get the value of $\theta$ in the polar point.
 
