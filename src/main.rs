@@ -235,7 +235,7 @@ fn generate(outfile: String, color: &[u8; 3]) {
 
         let angle: f32 = (y as f32/x as f32).atan();
         let r = (x as f32)/angle.cos();
-        println!("a = {}, r = {}, fn = {}, x= {}, y = {}", a1, r, trig_fn, x, y);
+        // println!("a = {}, r = {}, fn = {}, x= {}, y = {}", a1, r, trig_fn, x, y);
         let mut light_pixel = false;
         match trig_fn {
             1 => {
@@ -265,8 +265,6 @@ fn generate(outfile: String, color: &[u8; 3]) {
             *pixel = image::Rgb(*color);
         }
     }
-
-    // Challenge 2: Generate something more interesting!
 
     imgbuf.save(outfile).unwrap();
 }
