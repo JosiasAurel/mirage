@@ -105,10 +105,8 @@ I'll save you some brain cells and direct your to [Brillian](https://brilliant.o
 Generally polar coordinates are of the form $r = acos\theta$. The trigonometric function there could be any of $cos$, $sin$ or $tan$ or even more than one.
 
 We know that 
-$$
-r² = x² + y² ...1
-x = rcos\theta ...2
-y = rsin\theta ...3
+
+$$ r² = x² + y² ...1 x = rcos\theta ...2 y = rsin\theta ...3
 $$
 
 Note : If you are unsure about x and y, think of Pythagorean theorem.
@@ -120,10 +118,7 @@ In polar coordinates, points are of the form $(r, \theta)$ but we are dealing wi
 
 In order to plot each polar point,we need to first convert them to cartesian points.
 
-$$
-sin\theta = { y \over r }
-cos\theta = { x \over r }
-tan\theta = { y \over y }
+$$ sin\theta = { y \over r } cos\theta = { x \over r } tan\theta = { y \over y }
 $$
 
 For $tan\theta$, we will get the value of $\theta$ in the polar point.
