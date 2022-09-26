@@ -22,6 +22,9 @@ Run the binary by calling it `./mirage`.
 
 ## Features
 
+> infile.png and outfile.png represent the input image file and the name of the output file, respectively
+> The extension (.png) could be any other extension like .jpeg, .jpg etc
+
 ### Blur Image
 
 You can blur images by running
@@ -144,7 +147,6 @@ This same operation is repeated for each (x, y) value of the image until we are 
 
 ## TODO
 - Make commands stackable
-- Write proper README
 
 Contributions & Improvements are welcome.
 

@@ -137,11 +137,78 @@ fn main() {
 
 fn print_usage_and_exit() {
     println!("USAGE (when in doubt, use a .png extension on your filenames)");
-    println!("blur INFILE OUTFILE");
-    println!("fractal OUTFILE");
-    // **OPTION**
-    // Print useful information about what subcommands and arguments you can use
-    // println!("...");
+    let doc_string = "
+        
+> infile.png and outfile.png represent the input image file and the name of the output file, respectively
+> The extension (.png) could be any other extension like .jpeg, .jpg etc
+
+### Blur Image
+
+You can blur images by running
+```shell
+./mirage input.png output.png 
+```
+The default blur amount is 2.0 but you can change that to any amout you want by passing a number as third argument.
+
+```shell
+./mirage input.png output.png 3.4
+```
+
+### Grayscale Image
+
+Make an image grayscale by running
+```shell
+./mirage grayscale input.png output.png
+```
+
+### Invert Image
+Invert an image using
+```
+./mirage invert input.png output.png 
+```
+
+### Rotate Image 
+You can rotate an image `left` or `right` or make it `reverse`.
+```
+./mirage rotate input.png output.png left|right|reverse
+```
+
+### Brighten Image
+
+This will brighten the image by an amout of 2
+```shell
+./mirage brighten input.png output.png 
+```
+Set your own brightness by passing a number as third argument. It should be an integer. 
+Negative values will make the image dimmer while positive values will make it brighter.
+```shell
+./mirage brighten input.png output.png 4
+```
+
+### Crop Image
+
+Run
+```shell
+./mirage crop input.png output.png x y width height
+```
+Where x and y represent the initial points where to crop while width is how much to move on the x-axis and height is how much it moves from the y-axis.
+These arguments are required.
+
+### Fractal Image
+
+The CLI will generate a Julia set fractal if you run
+```shell
+./mirage fractal outfile.png
+```
+
+### Generated Image
+
+The CLI can also generate random beautiful patterns if you're lucky.
+```shell
+./mirage generate outfile.png
+```
+        ";
+    println!("{}", doc_string);
     std::process::exit(-1);
 }
 
