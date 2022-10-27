@@ -145,8 +145,5 @@ If for that value of $\theta$ we get the same value of r as those from we got fr
 
 This same operation is repeated for each (x, y) value of the image until we are done. The final output is a beautiful pattern.
 
-## TODO
-- Make commands stackable
-
 Contributions & Improvements are welcome.
 
