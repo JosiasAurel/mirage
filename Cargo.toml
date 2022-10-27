@@ -6,6 +6,8 @@ edition = "2018"
 
 [profile.release]
 lto = true
+opt-level = "z"
+strip = true
 
 [dependencies]
 clap = { version = "4.0.18", features = ["derive"] }

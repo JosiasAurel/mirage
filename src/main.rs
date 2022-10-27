@@ -4,31 +4,42 @@ use rand::Rng;
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Args {
+    #[arg()]
+    infile: Option<String>,
+
+    /// Name of file where to store the result
     #[arg(short, long)]
     outfile: Option<String>,
 
+    /// Specify blur amount in decimal
     #[arg(short, long)]
     blur: Option<f32>,
 
+    /// Positive whole number ot brighten and negative whole number to dim the image
     #[arg(short, long)]
     shine: Option<i32>,
 
+    /// Provide the width and height by which to crop image. Starts at x= 0 & y = 0
     #[arg(short, long)]
-    crop: Option<String>,
+    crop: Option<Vec<u32>>,
 
+    /// rotates image _left_, _right_ or reverse
     #[arg(short, long)]
     rotate: Option<String>,
 
+    /// Invert the image colors
     #[arg(short, long)]
     invert: Option<bool>,
 
-    // this command will make the image black and white
+    /// Make the image black and white
     #[arg(short, long)]
     monochrome: Option<bool>,
 
+    /// Generates a fractal
     #[arg(short, long)]
     fractal: Option<bool>,
 
+    /// Generates a random diagram using polar coordinates
     #[arg(short, long)]
     generate: Option<bool>,
 }
@@ -43,11 +54,16 @@ struct CropParams {
 fn main() {
     let commands = Args::parse();
 
-    // forgive the repetition
-    let mut args: Vec<String> = std::env::args().skip(1).collect();
-
-    let infile = args.remove(0);
+    let mut infile = String::from("infile.png");
     let mut outfile = String::from("outfile.png");
+
+    match commands.infile {
+        Some(inf) => {
+            infile = inf;
+            // println!("Infile = {}", &inf);
+        }
+        None => {}
+    }
 
     match commands.outfile {
         Some(out) => outfile = out.clone(),
@@ -70,16 +86,32 @@ fn main() {
     }
 
     match commands.crop {
-        Some(width_height) => {
-            let wh: Vec<&str> = width_height.split("-").collect();
-            let width: u32 = wh[0].parse().unwrap_or_else(|_| 0);
-            let height: u32 = wh[1].parse().unwrap_or_else(|_| 0);
-            let crop_params = CropParams {
+        Some(crop_params_) => {
+            let mut crop_params: CropParams = CropParams {
                 x: 0,
                 y: 0,
-                width,
-                height,
+                width: 0,
+                height: 0,
             };
+
+            if crop_params_.len() == 2 {
+                crop_params = CropParams {
+                    x: 0,
+                    y: 0,
+                    width: crop_params_[0],
+                    height: crop_params_[1],
+                };
+            } else if crop_params_.len() == 4 {
+                crop_params = CropParams {
+                    x: crop_params_[0],
+                    y: crop_params_[1],
+                    width: crop_params_[2],
+                    height: crop_params_[3],
+                }
+            } else {
+                println!("Arguments missing when tryping to crop image");
+                std::process::exit(-1);
+            }
             crop(infile.clone(), outfile.clone(), &crop_params);
         }
         None => {}
@@ -121,136 +153,6 @@ fn main() {
         }
         None => {}
     }
-    /*
-             let mut args: Vec<String> = std::env::args().skip(1).collect();
-
-        if args.is_empty() {
-            print_usage_and_exit();
-        }
-
-        if (args.len() >= 3) {
-            let mut args_ = args.clone();
-            for arg in args.iter_mut() {
-                let subcommand = args_.remove(0);
-                let infile = args_.remove(0);
-                let outfile = args_.remove(0);
-                match subcommand.as_str() {
-                    "blur" => {
-                        let blur_amount: f32;
-
-                        blur_amount = args_
-                            .remove(0)
-                            .parse()
-                            .expect("Failed to parse Blur Amount");
-
-                        blur(infile, outfile, blur_amount);
-                    }
-
-                    "brighten" => {
-                        if args_.len() < 2 || args_.len() > 3 {
-                            print_usage_and_exit();
-                        }
-                        let infile = args_.remove(0);
-                        let outfile = args_.remove(0);
-                        let inc_amt: i32;
-                        if args_.len() > 0 {
-                            inc_amt = args_
-                                .remove(0)
-                                .parse()
-                                .expect("Failed to parse brightness amount");
-                        } else {
-                            inc_amt = 2;
-                        }
-                        brighten(infile, outfile, inc_amt);
-                    }
-
-                    "crop" => {
-                        if args_.len() != 6 {
-                            print_usage_and_exit();
-                        }
-                        let infile = args_.remove(0);
-                        let outfile = args_.remove(0);
-
-                        let crop_params = CropParams {
-                            x: args_.remove(0).parse().expect("Failed to parse x"),
-                            y: args_.remove(0).parse().expect("Failed to parse x"),
-                            width: args_.remove(0).parse().expect("Failed to parse x"),
-                            height: args_.remove(0).parse().expect("Failed to parse x"),
-                        };
-
-                        crop(infile, outfile, &crop_params);
-                    }
-                    // Rotate -- see the rotate() function below
-                    "rotate" => {
-                        if args_.len() < 2 || args_.len() > 3 {
-                            print_usage_and_exit();
-                        }
-
-                        let infile = args_.remove(0);
-                        let outfile = args_.remove(0);
-                        let direction: String;
-                        if args_.len() > 0 {
-                            direction = args_.remove(0);
-                        } else {
-                            direction = String::from("right");
-                        }
-
-                        rotate(infile, outfile, &direction);
-                    }
-
-                    "invert" => {
-                        if args_.len() != 2 {
-                            print_usage_and_exit();
-                        }
-                        let infile = args_.remove(0);
-                        let outfile = args_.remove(0);
-
-                        invert(infile, outfile);
-                    }
-
-                    "grayscale" => {
-                        if args_.len() != 2 {
-                            print_usage_and_exit();
-                        }
-                        let infile = args_.remove(0);
-                        let outfile = args_.remove(0);
-
-                        grayscale(infile, outfile);
-                    }
-
-                    _ => {
-                        print_usage_and_exit();
-                    }
-                }
-                // args = args_;
-            }
-        } else {
-            let subcommand = args.remove(0);
-            match subcommand.as_str() {
-                "fractal" => {
-                    if args.len() != 1 {
-                        print_usage_and_exit();
-                    }
-                    let outfile = args.remove(0);
-                    fractal(outfile);
-                }
-
-                "generate" => {
-                    let color: [u8; 3];
-                    let outfile = args.remove(0);
-                    if args.len() == 0 {
-                        let mut rng = rand::thread_rng();
-                        color = [rng.gen::<u8>(), rng.gen::<u8>(), rng.gen::<u8>()];
-
-                        generate(outfile, &color);
-                    }
-                }
-                _ => {}
-            }
-        }
-    */
-
-    // let subcommand = args.remove(0);
 }
 
 fn blur(infile: String, outfile: String, blur_amount: f32) {
